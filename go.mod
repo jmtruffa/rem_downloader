@@ -1,4 +1,4 @@
-module github.com/jmtruffa/rem_data
+module github.com/jmtruffa/rem_downloader
 
 go 1.22
 
