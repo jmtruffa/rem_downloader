@@ -315,7 +315,7 @@ func parseAndInsert(filename string, truncateFirst bool) error {
 
 // ---------------------- UPSERT MODE ----------------------
 
-func parseAndUpsert(filename string) error {
+func parseAndUpsert(filename string, truncateFirst bool) error {
 	fmt.Println("Abriendo archivo XLSX...")
 	f, err := excelize.OpenFile(filename)
 	if err != nil {
@@ -351,6 +351,13 @@ func parseAndUpsert(filename string) error {
 		return fmt.Errorf("error ping DB: %v", err)
 	}
 	fmt.Println("Conectado a PostgreSQL.")
+
+	if truncateFirst {
+		fmt.Println("Truncando tabla rem_data...")
+		if _, err := db.Exec("TRUNCATE TABLE rem_data RESTART IDENTITY"); err != nil {
+			return fmt.Errorf("error truncando: %v", err)
+		}
+	}
 
 	tx, err := db.Begin()
 	if err != nil {
@@ -520,7 +527,7 @@ Ejemplos:
 
 	if upsert {
 		fmt.Println("Modo: UPSERT (ON CONFLICT)")
-		if err := parseAndUpsert(filename); err != nil {
+		if err := parseAndUpsert(filename, truncate); err != nil {
 			log.Fatalf("Error: %v", err)
 		}
 	} else {

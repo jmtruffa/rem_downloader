@@ -12,7 +12,7 @@ psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f schema.sql
 
 # 2. Compilar
 go mod tidy
-go build -o rem_data .
+go build -o rem_downloader .
 ```
 
 ## Uso
@@ -26,13 +26,13 @@ export POSTGRES_PORT=5432
 export POSTGRES_DB=...
 
 # Carga inicial completa (descarga del BCRA + truncate + COPY bulk)
-./rem_data -truncate
+./rem_downloader -truncate
 
 # Re-ingesta mensual (descarga del BCRA + upsert, no duplica)
-./rem_data -upsert
+./rem_downloader -upsert
 
 # Desde archivo local
-./rem_data -file ./historico-relevamiento-expectativas-mercado.xlsx -upsert
+./rem_downloader -file ./historico-relevamiento-expectativas-mercado.xlsx -upsert
 ```
 
 ## Modos
@@ -68,7 +68,7 @@ Para actualización mensual automática (el BCRA publica entre el 1 y el 15 de c
 
 ```bash
 # Cada día 10 a las 10:00 AM
-0 10 10 * * cd /path/to/rem_data && ./rem_data -upsert >> /var/log/rem_data.log 2>&1
+0 10 10 * * cd /path/to/rem_downloader && ./rem_downloader -upsert >> /var/log/rem_downloader.log 2>&1
 ```
 
 ## Fuente de datos
